@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="A tool for finding the Place ID for a location on Google Maps">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Google Maps PlaceID Finder</title>
+
+  <!--
+    TODO
+    view https://github.com/PolymerElements/polymer-starter-kit/blob/master/app/index.html
+    for the rest of this
+  -->
+
+  <script src="dist/lib/webcomponents-lite.js"></script>
+  <link rel="import" href="dist/elements.html">
+  <link rel="import" href="styles.html">
+
+</head>
+
+<body unresolved class="fullbleed relative">
+
+  <span id="browser-sync-binding"></span>
+
+  <template is="dom-bind" id="app">
+
+    <google-map-search query="{{query}}" map="{{map}}" list="{{results}}"></google-map-search>
+
+    <google-map map="{{map}}" latitude="{{lat}}" longitude="{{long}}" class="fit"></google-map>
+
+    <section id="queryArea">
+
+      <paper-material id="queryInput">
+        <paper-input autofocus label="Enter a location" value="{{query}}"></paper-input>
+      </paper-material>
+
+      <paper-material>
+        <google-map-search-results list="{{results}}" result="{{location}}" latitude="{{lat}}" longitude="{{long}}"></google-map-search-results>
+      </paper-material>
+
+    </section>
+
+    <to-copy></to-copy>
+
+    <script>
+
+      // bindings cancel out defaults, so add to scope
+      var app = document.querySelector('#app');
+      // Hello Dallas TX!
+      app.lat = 32.7767;
+      app.long = -96.7970;
+
+      var resultElement = document.querySelector('google-map-search-results');
+      resultElement.addEventListener('result-changed', copyResult);
+
+      var copyElement = document.querySelector('to-copy')
+
+      function copyResult(e) {
+        copyElement.copy( e.detail.value.place_id );
+      }
+
+    </script>
+
+  </template>
+
+</body>
+</html>

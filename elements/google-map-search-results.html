@@ -1,0 +1,125 @@
+<!--
+@license
+Copyright (c) 2015 Alexander (AJ) Klein
+MIT License
+This element will get its own repository soon.
+-->
+<link rel="import" href="../bower/polymer/polymer.html">
+
+<!--
+An element for viewing Google Maps Places Search results.
+
+Example
+
+    <google-map
+      map="{{map}}"
+      latitude="{{lat}}"
+      longitude="{{lng}}"></google-map>
+    <google-map-search
+      map="{{map}}"
+      query="Google Headquarters"
+      list="{{results}}"></google-map-search>
+    <google-map-search-results
+      list="{{results}}"
+      latitude="{{lat}}"
+      longitude="{{lng}}"></google-map-search-results>
+
+@element google-map-search-results
+
+-->
+
+<dom-module id="google-map-search-results">
+
+  <style>
+    p {
+      border-top: 2px solid #eee;
+      margin: 0;
+      padding: 1em;
+      cursor: pointer;
+      color: var(--gmap-search-results-primary-text-color, #000000);
+    }
+    p:hover {
+      background: var(--gmap-search-results-hover-bg, #eeeeee);
+    }
+    p:first-child {
+      border-top: none;
+    }
+    .address {
+      font-size: 0.8em;
+      color: var(--gmap-search-results-secondary-text-color, #aaaaaa);
+    }
+  </style>
+
+  <template>
+
+    <div id="list">
+      <template is="dom-if" if="{{list}}">
+        <template is="dom-repeat" items="{{list}}">
+          <p on-tap="_selectLocation"><span class="name">{{item.name}}</span>&nbsp;<span class="address">{{item.formatted_address}}</span></p>
+        </template>
+      </template>
+    </div>
+
+  </template>
+
+  <script>
+
+    Polymer({
+
+      is: 'google-map-search-results',
+
+      properties: {
+
+        /**
+         * Results array provided by another element
+         * @type {Array}
+         */
+        list: {
+          type: Array,
+          value: null
+        },
+
+        /**
+         * The selected result
+         * @type {Object}
+         */
+        result: {
+          type: Object,
+          value: null,
+          notify: true
+        },
+
+        /**
+         * The selected object's latitude
+         * @type {Number}
+         */
+        latitude: {
+          type: Number,
+          notify: true
+        },
+
+        /**
+         * The selected object's longitude
+         * @type {Number}
+         */
+        longitude: {
+          type: Number,
+          notify: true
+        }
+
+      },
+
+      /**
+       * Select a location from the list of locations
+       * @param  {Event} e ({ detail: Object, model: Object })
+       */
+      _selectLocation: function(e) {
+        this.result = e.model.item;
+        this.latitude = e.model.item.geometry.location.lat();
+        this.longitude = e.model.item.geometry.location.lng();
+      }
+    });
+
+  </script>
+
+</dom-module>

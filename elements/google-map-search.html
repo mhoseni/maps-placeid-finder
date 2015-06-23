@@ -1,0 +1,96 @@
+<!--
+@license
+Copyright (c) 2015 Alexander (AJ) Klein
+The work that has been done here gets most of the credit
+https://github.com/GoogleWebComponents/google-map/blob/master/google-map-search.html.
+The changes I have made past that are under the MIT License. This element will
+get its own repository soon (or changes submitted to
+GoogleWebComponents/google-map).
+-->
+<link rel="import" href="../bower/polymer/polymer.html">
+
+<!--
+An element for using the Google Maps Place Textsearch service.
+
+Example
+
+    <google-map
+      map="{{map}}"></google-map>
+    <google-map-search
+      map="{{map}}"
+      query="Google Headquarters"></google-map-search>
+
+@element google-map-search
+
+-->
+
+<script>
+
+  Polymer({
+
+    is: 'google-map-search',
+
+    properties: {
+
+      /**
+       * A map object received from a <google-map> element
+       * @type {Object}
+       */
+      map: {
+        type: Object,
+        value: null
+      },
+
+      /**
+       * The text query to send to the textsearch api
+       * @type {String}
+       */
+      query: {
+        type: String,
+        value: null,
+        observer: '_queryChanged'
+      },
+
+      /**
+       * The list populated by the results of the textsearch
+       * @type {Array}
+       */
+      list: {
+        type: Array,
+        value: null,
+        notify: true
+      }
+
+    },
+
+    /**
+     * INTERNAL when query is changed, debounce search call
+     */
+    _queryChanged: function() {
+      this.debounce( 'query-update', this.search, 300 );
+    },
+
+    /**
+     * The search function. Call it if you need it.
+     * @return {[type]} [description]
+     */
+    search: function() {
+      this.cancelDebouncer( 'query-update' );
+      if( this.query && this.map ) {
+        var places = new google.maps.places.PlacesService( this.map );
+        places.textSearch({ query: this.query}, this._gotResults.bind(this));
+      }
+    },
+
+    /**
+     * Callback from the Google Maps Places Textsearch service
+     * @param  {Array} results The list of results
+     */
+    _gotResults: function( results ) {
+      // Need to force a test to see how this fails and how to error gracefully
+      this.list = results.slice(0, 5);
+      this.fire('google-map-search-result', this.result);
+    }
+  });
+
+</script>

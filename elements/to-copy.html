@@ -1,0 +1,125 @@
+<!--
+@license
+Copyright (c) 2015 Alexander (AJ) Klein
+MIT License.
+This element will get its own repository soon.
+-->
+<link rel="import" href="../bower/polymer/polymer.html">
+<link rel="import" href="../bower/paper-toast/paper-toast.html">
+
+<!--
+An element that copies a String to the clipboard.
+
+Example
+
+    <to-copy></to-copy>
+
+    <script>
+      var e = document.querySelector('to-copy');
+      e.copy( 'An item' );
+    </script>
+
+@element to-copy
+
+-->
+
+<dom-module id="to-copy">
+
+  <template>
+
+    <span hidden id="toCopy">{{_valueToCopy}}</span>
+
+    <paper-toast
+      id="toast"
+      duration="[[duration]]"
+      text="[[text]]"></paper-toast>
+
+  </template>
+
+  <script>
+
+    Polymer({
+
+      is: 'to-copy',
+
+      properties: {
+
+        /**
+         * Leave a longer duration than paper-toasts default to manually copy
+         * if needed
+         * @type {Number}
+         */
+        duration: {
+          type: Number,
+          value: 60000
+        },
+
+        /**
+         * IN PROGRESS - INTERNAL - The text shown in the toast
+         * @type {String}
+         */
+        text: {
+          type: String,
+          computed: '_computeText(_valueToCopy,textHelper)'
+        },
+
+        /**
+         * The second part of the text shown in the toast
+         * @type {String}
+         */
+        textHelper: {
+          type: String,
+          value: 'copied to clipboard'
+        },
+
+        /**
+         * The value (String) that needs to be copied.
+         * @type {String}
+         */
+        _valueToCopy: {
+          type: String,
+          value: 'Nothing'
+        },
+
+        /**
+         * If execCommand('copy') is supported or not
+         * @type {Boolean}
+         */
+        _copySupported: {
+          type: Boolean,
+          value: function() {
+            return document.queryCommandSupported('copy');
+          }
+        }
+
+      },
+
+      /**
+       * IN PROGRESS - Create the value for the text property
+       */
+      _computeText: function() {
+        return this._valueToCopy + ' ' + this.textHelper;
+      },
+
+      /**
+       * Copy a value (String) to
+       * @param  {String-ish} value What will be copied
+       */
+      copy: function( value ) {
+        this._valueToCopy = String( value );
+
+        if( this._copySupported ) {
+          var range = document.createRange();
+          range.selectNode(this.$.toCopy);
+          window.getSelection().addRange(range);
+          document.execCommand('copy');
+          window.getSelection().removeRange(range);
+        }
+
+        this.$.toast.show();
+      }
+
+    });
+  </script>
+
+</dom-module>

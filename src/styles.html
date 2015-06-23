@@ -1,0 +1,50 @@
+<style is="custom-style">
+
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body {
+  background-color: #eee;
+}
+
+#queryArea {
+  position: absolute;
+  top: 20px;
+  left: 20%;
+  width: 60%;
+}
+
+#queryArea paper-material {
+  background: #fff;
+  border-radius: 2px;
+  margin-top: 2px;
+}
+
+#queryArea paper-input {
+  padding: 0 1em;
+}
+
+#queryArea paper-material:first-child {
+  margin-top: 0;
+}
+
+google-map-search-results,
+to-copy {
+  font-family: 'Roboto', sans-serif;
+}
+
+@media only screen and (min-width: 800px) {
+  #queryArea {
+    top: 10px;
+    left: 50%;
+    width: 400px;
+    transform: translateX(-200px);
+  }
+}
+
+</style>
